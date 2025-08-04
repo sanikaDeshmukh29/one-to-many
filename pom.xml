@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sprk</groupId>
-	<artifactId>one-to-one</artifactId>
+	<artifactId>one-to-many</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>one-to-one</name>
 	<description>Demo project for Spring Boot one-to-one mappings</description>

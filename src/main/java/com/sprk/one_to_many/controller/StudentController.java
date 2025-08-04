@@ -1,12 +1,13 @@
-package com.sprk.one_to_one.controller;
+package com.sprk.one_to_many.controller;
 
-import com.sprk.one_to_one.entity.Student;
-import com.sprk.one_to_one.entity.StudentDetail;
-import com.sprk.one_to_one.repository.StudentRepository;
+import com.sprk.one_to_many.entity.Courses;
+import com.sprk.one_to_many.entity.Student;
+import com.sprk.one_to_many.repository.CourseRepository;
+import com.sprk.one_to_many.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -15,10 +16,35 @@ public class StudentController {
     @Autowired
     private StudentRepository studentRepository;
 
+    @Autowired
+    private CourseRepository courseRepository;
+
     @PostMapping("/save-student")
     public Student saveStudent(@RequestBody Student student) {
 
+        List<Courses> courses = new ArrayList<>();
+
+        // now copy the course from student inti list obj
+        for(Courses course:student.getCourses()){
+
+            courses.add(course);
+        }
+        student.getCourses().clear();
+
+        // save only student
         Student savedStudent = studentRepository.save(student);
+
+        // now save courses with respect to that student
+        if(courses != null){
+
+            for(Courses course : courses){
+                course.setStudent(savedStudent);
+                Courses savedCourses = courseRepository.save(course);
+
+            }
+
+            savedStudent.setCourses(courses);
+        }
 
         return savedStudent;
     }
@@ -38,23 +64,6 @@ public class StudentController {
 
     }
 
-    @PutMapping("/edit-student")
-    public Student editStudent(@RequestParam int rollNo, @RequestBody Student student) {
-
-        Student exsistingStudent = studentRepository.findById(rollNo).orElse(null);
-
-        student.setRollNo(rollNo);
-
-
-        StudentDetail studentDetail = student.getStudentDetail();
-        studentDetail.setStudentDetailId(exsistingStudent.getStudentDetail().getStudentDetailId());
-
-        student.setStudentDetail(studentDetail);
-
-        return studentRepository.save(student);
-
-
-    }
 
     @DeleteMapping("/delete-student")
     public String deleteStudent(@RequestParam int rollNo){

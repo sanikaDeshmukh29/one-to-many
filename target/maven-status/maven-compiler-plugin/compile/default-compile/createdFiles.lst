@@ -1,0 +1,5 @@
+com\sprk\one_to_one\controller\StudentController.class
+com\sprk\one_to_one\entity\Student.class
+com\sprk\one_to_one\OneToOneApplication.class
+com\sprk\one_to_one\entity\StudentDetail.class
+com\sprk\one_to_one\repository\StudentRepository.class
