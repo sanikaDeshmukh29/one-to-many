@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @RestController
@@ -80,6 +81,40 @@ public class CourseController {
 
         }
 
+
+    }
+
+    @DeleteMapping("/delete-course/{rollNo}/{courseName}")
+    public ResponseEntity<?> deleteCourse(@PathVariable int rollNo, @PathVariable String courseName){
+
+        Student existingStudent = studentRepository.findById(rollNo).orElse(null);
+
+        if(existingStudent == null){
+            return ResponseEntity.status(404).body("Student with roll no = " + rollNo + " not found");
+        }
+
+        List<Courses> existingStudentCourses = existingStudent.getCourses();
+        Iterator<Courses> iterator = existingStudentCourses.iterator();
+        boolean foundCourse = false;
+        int courseId = 0;
+
+       while(iterator.hasNext()){
+           Courses course = iterator.next();
+           if(course.getCourseName().equalsIgnoreCase(courseName)){
+               foundCourse = true;
+               courseId = course.getCourseID();
+               iterator.remove();
+           }
+       }
+        existingStudent.setCourses(existingStudentCourses);
+        if(foundCourse){
+            Courses existingCourse = courseRepository.findById(courseId).get();
+            courseRepository.delete(existingCourse);
+            return ResponseEntity.ok(existingStudent);
+
+        }else{
+            return ResponseEntity.status(404).body("Student with roll no = " + rollNo + " and course = "+courseName+" not found");
+        }
 
     }
 

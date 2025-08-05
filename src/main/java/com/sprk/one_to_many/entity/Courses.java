@@ -21,7 +21,7 @@ public class Courses {
 
     private String courseDuration;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = {CascadeType.MERGE,CascadeType.PERSIST, CascadeType.REFRESH,CascadeType.DETACH})
     @JoinColumn(name = "roll_no")
     @JsonBackReference
     private Student student;
