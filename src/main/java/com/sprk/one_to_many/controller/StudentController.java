@@ -2,6 +2,8 @@ package com.sprk.one_to_many.controller;
 
 import com.sprk.one_to_many.entity.Courses;
 import com.sprk.one_to_many.entity.Student;
+import com.sprk.one_to_many.entity.StudentDto;
+import com.sprk.one_to_many.entity.StudentUtil;
 import com.sprk.one_to_many.repository.CourseRepository;
 import com.sprk.one_to_many.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class StudentController {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private StudentUtil studentUtil;
 
     @PostMapping("/save-student")
     public Student saveStudent(@RequestBody Student student) {
@@ -92,5 +97,20 @@ public class StudentController {
         return ResponseEntity.status(404).body("Student with roll no: "+rollNo+" not found!!");
 
     }
+
+    @GetMapping("/get-by-rollno")
+    public StudentDto getStudentByRollno(@RequestParam int rollno) {
+        Student dbStudent =  studentRepository.findById(rollno).orElse(null);
+
+        StudentDto dbStudentDto = studentUtil.studentToStudentDto(dbStudent);
+
+        System.out.println("I have fetch Students...");
+        System.out.println("I am in method getStudentByRollNo...");
+
+        List<Courses> courses = dbStudent.getCourses();
+        System.out.println(courses);
+        return dbStudentDto;
+    }
+
 
 }
