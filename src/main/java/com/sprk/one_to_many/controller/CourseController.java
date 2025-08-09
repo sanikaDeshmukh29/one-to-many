@@ -1,5 +1,7 @@
 package com.sprk.one_to_many.controller;
 
+import com.sprk.one_to_many.entity.CourseDto;
+import com.sprk.one_to_many.entity.CourseUtil;
 import com.sprk.one_to_many.entity.Courses;
 import com.sprk.one_to_many.entity.Student;
 import com.sprk.one_to_many.repository.CourseRepository;
@@ -20,6 +22,9 @@ public class CourseController {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private CourseUtil courseUtil;
 
 
     @PostMapping("/add-course/{rollNo}")
@@ -116,6 +121,16 @@ public class CourseController {
             return ResponseEntity.status(404).body("Student with roll no = " + rollNo + " and course = "+courseName+" not found");
         }
 
+    }
+
+    @GetMapping("get-course-by-id/{courseID}")
+    public ResponseEntity<?> getCourseById(@PathVariable int courseID){
+
+        Courses dbCourse = courseRepository.findById(courseID).orElse(null);
+
+        CourseDto courseDto =  courseUtil.courseToCourseDto(dbCourse);
+
+        return ResponseEntity.ok(courseDto);
     }
 
 }
