@@ -5,6 +5,7 @@ import com.sprk.one_to_many.entity.Student;
 import com.sprk.one_to_many.repository.CourseRepository;
 import com.sprk.one_to_many.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -72,4 +73,19 @@ public class StudentController {
 
         return "Student deleted successfully";
     }
+
+    // Delete whole student -> Delete all courses associate to that student
+    @DeleteMapping("/student/delete/{rollNo}")
+    public ResponseEntity<?> deleteWholeStudent(@PathVariable int rollNo){
+
+        Student dbStudent = studentRepository.findById(rollNo).orElse(null);
+
+        if(dbStudent != null){
+            studentRepository.deleteById(rollNo);
+            return ResponseEntity.ok().body("Student with roll no: "+rollNo+" deleted successfully");
+        }
+        return ResponseEntity.status(404).body("Student with roll no: "+rollNo+" not found!!");
+
+    }
+
 }
