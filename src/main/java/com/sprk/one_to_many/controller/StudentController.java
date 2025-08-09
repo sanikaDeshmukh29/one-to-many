@@ -80,7 +80,12 @@ public class StudentController {
 
         Student dbStudent = studentRepository.findById(rollNo).orElse(null);
 
+
         if(dbStudent != null){
+            List<Courses> courses = dbStudent.getCourses();
+            for(Courses course : courses){
+                course.setStudent(null);
+            }
             studentRepository.deleteById(rollNo);
             return ResponseEntity.ok().body("Student with roll no: "+rollNo+" deleted successfully");
         }

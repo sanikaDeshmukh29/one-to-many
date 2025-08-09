@@ -23,7 +23,7 @@ public class Student {
 
     //Aggregation
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "student", cascade = {CascadeType.MERGE, CascadeType.PERSIST,CascadeType.REFRESH,CascadeType.DETACH})
     @JsonManagedReference
     private List<Courses> courses = new ArrayList<>();
 
